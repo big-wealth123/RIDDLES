@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+          background: linear-gradient(180deg, #4dabf7, #9775fa);
+    }
+    div{
+        border: 1px solid rgb(255, 255, 255);
+        align-items: center;
+        width: 30%;
+        padding: 9% 2% 15% 12%;
+        margin: 10% auto;
+        background-color: wheat;
+        border-radius: 100%;
+        text-align: left;
+        
+    }
+    input{
+        padding:3% 13%;
+        margin: 0 0 3% 0;
+        border-radius: 30px;
+border: none;
+    }
+    button{
+             padding:3% 20.5%;
+        margin: 6% 0 3% 0;  
+        background-color: rgb(159, 159, 230);
+        border: none;
+        font-size: 20px;
+        border-radius: 30px;
+    }
+    @media (max-width: 600px) {
+        div{
+            width: 80%;
+            padding: 20% 5% 25% 15%;
+        }
+        input{
+            padding:3% 20%;
+        }
+        button{
+             padding:3% 25%;
+        }
+    }
+</style>
+
+<body>
+    <div>
+        
+        <input type="text" id="nameInput" placeholder="Enter your full name"> <br>
+        <button>Start riddles</button>
+    </div>
+
+</body>
+<script>
+    let input = document.getElementById('nameInput');
+    let button = document.querySelector('button');
+    button.addEventListener('click', () => {
+        let name = input.value;
+        if(name) {
+            localStorage.setItem('username', name);
+            window.location.href = 'exam.html';
+        } else {
+            alert('Please enter your full name.');
+        }
+        input.value = '';       
+    });
+</script>
+</html>

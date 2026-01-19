@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riddle Game</title>
+
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: linear-gradient(135deg, #4dabf7, #9775fa);
+    /* min-height: 1/0vh; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .game {
+    background: #fff;
+    max-width: 420px;
+    width: 100%;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0,0,0,.2);
+    text-align: center;
+    margin: 0 0 0 15%;
+  }
+
+  h2 {
+    margin-bottom: 15px;
+  }
+
+  .score {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  button.option {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    background: #f1f3f5;
+  }
+#gam{
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    background: #5f3dc4;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+  button.option:hover {
+    background: #e7f5ff;
+  }
+
+  .correct {
+    background: #79e0be !important;
+  }
+
+  .wrong {
+    background: #be6767 !important;
+  }
+
+  #nextBtn {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    background: #5f3dc4;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 500px) {
+
+    body {
+      padding: 10px;
+      display: block;
+    }
+    .game {
+    width: 80%;
+    margin: auto;
+  }
+}
+  
+</style>
+</head>
+<body>
+<h1></h1>
+<div class="game">
+  <p>          
+Answer All Riddles And Win The Sum Of 20 Million Dollars!</p>
+  <div class="score">Score: <span id="score">0</span>/20</div>
+  <h2 id="question">Loading... </h2>
+  <div id="options"></div>
+  <button id="nextBtn">Next</button>
+</div>
+
+<script>
+let riddles = [];
+let index = 0;
+let score = 0;
+let h1 = document.querySelector("h1");
+let username = localStorage.getItem("username");;
+h1.innerHTML= `Welcome, ${username}!
+`;
+
+
+fetch("exam.json")
+  .then(res => res.json())
+  .then(data => {
+    riddles = shuffle(data.riddles);
+    showRiddle();
+  });
+
+function showRiddle() {
+  document.getElementById("nextBtn").style.display = "none";
+  const riddle = riddles[index];
+  document.getElementById("question").textContent = riddle.question;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  riddle.options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = option;
+
+    btn.onclick = () => {
+      disableButtons();
+      if (option === riddle.answer) {
+        btn.classList.add("correct");
+        score++;
+        document.getElementById("score").textContent = score;
+      }
+
+       else {
+        btn.classList.add("wrong");
+        document.querySelectorAll(".option").forEach(b => {
+          if (b.textContent === riddle.answer) {
+            b.classList.add("correct");
+          }
+        });
+      }
+      document.getElementById("nextBtn").style.display = "block";
+    };
+
+    optionsDiv.appendChild(btn);
+  });
+}
+
+document.getElementById("nextBtn").onclick = () => {
+  index++;
+  if (index < riddles.length) {
+    showRiddle();
+  }
+  else if(score == 20){
+ document.querySelector('.game').innerHTML = `
+  
+      <h2>Congratulations 🎉</h2>
+      <p>You answered all riddles correctly and won <strong>20 Million Dollars</strong>!</p>
+      <button onclick="location.reload()" id="gam">Play Again</button>
+
+      <h3>DEY PLAY </h3>
+ `
+  } 
+  else {
+    document.querySelector(".game").innerHTML = `
+      <h2>Game Over 🎉</h2>
+      <p>Your score: <strong>${score}/20</strong></p>
+      <button onclick="location.reload()" id="gam">Play Again</button>
+    `;
+  }
+};
+localStorage.setItem("finalScore", score);
+localStorage.setItem("totalQuestions", riddles.length);
+localStorage.setItem("userName", username);
+
+localStorage.getItem("finalScore");
+localStorage.getItem("totalQuestions");
+localStorage.getItem("userName");
+
+
+function disableButtons() {
+  document.querySelectorAll(".option").forEach(btn => {
+    btn.disabled = true;
+  });
+}
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+</script>
+
+</body>
+</html>
